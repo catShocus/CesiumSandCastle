@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../../public/Cesium/Cesium.js"></script>
+    <link rel="stylesheet" href="../../public/Cesium/Widgets/widgets.css">
+    <title>设置材质</title>
+</head>
+
+<body>
+    <div id="cesiumContainer"></div>
+</body>
+<script type="module">
+    import initMap from '../../utils/initMap.js'
+    import setImage from './utils/setImageMaterialProperty.js'
+    import setCheckerBoard from './utils/setCheckBoard.js'
+    import setStripe from './utils/setStripeMaterial.js'
+    import setGridMaterial from './utils/setGridMaterial.js'
+    //初始化地球
+    let viewer = initMap(Cesium)
+    //创建实体
+    // var entity = viewer.entities.add({
+    //     position: Cesium.Cartesian3.fromDegrees(-103.0, 40.0),
+    //     ellipse: {
+    //         semiMinorAxis: 250000.0,
+    //         semiMajorAxis: 400000.0,
+    //         // material: Cesium.Color.BLUE.withAlpha(0.5)//可设置不同的MaterialProperty
+    //     }
+    // })
+
+    var entity = viewer.entities.add({
+        polyline: {
+            positions: Cesium.Cartesian3.fromDegreesArray([-77, 35, -77.1, 35]),
+            width: 5,
+            material: Cesium.Color.RED
+        }
+    })
+
+    /* 设置图片纹理功能 */
+    // let url = './assest/R-C.jfif'
+    // setImage(entity, Cesium, url)
+
+    /* 设置棋盘纹理 */
+    // setCheckerBoard(entity,Cesium)
+
+    /* 设置条纹纹理 */
+    // setStripe(entity,Cesium)
+
+    /* 设置网格 */
+    // setGridMaterial(entity,Cesium)
+
+    /* 设置发光线 */
+    // entity.polyline.material = new Cesium.PolylineGlowMaterialProperty({
+    //     glowPower:0.2,
+    //     color:Cesium.Color.BLUE
+    // })
+
+    /* 设置线的外边界 */
+    entity.polyline.material = new Cesium.PolylineOutlineMaterialProperty({
+        color: Cesium.Color.ORANGE,
+        outlineWidth: 3,
+        outlineColor: Cesium.Color.BLACK
+    })
+
+    viewer.zoomTo(entity)
+</script>
+
+</html>

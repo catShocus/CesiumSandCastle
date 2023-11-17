@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../../public/Cesium/Cesium.js"></script>
+    <link rel="stylesheet" href="../../public/Cesium/Widgets/widgets.css">
+    <title>模型旋转</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        #rotateX {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 90px;
+            height: 50px;
+            border-radius: 10px;
+            color: white;
+            background: lightblue;
+        }
+
+        #rotateY {
+            position: absolute;
+            top: 0px;
+            left: 90px;
+            width: 90px;
+            height: 50px;
+            border-radius: 10px;
+            color: white;
+            background: lightblue;
+        }
+
+        #rotateZ {
+            position: absolute;
+            top: 0px;
+            left: 180px;
+            width: 90px;
+            height: 50px;
+            border-radius: 10px;
+            color: white;
+            background: lightblue;
+        }
+
+        #setScale {
+            position: absolute;
+            top: 0px;
+            left: 270px;
+            width: 90px;
+            height: 50px;
+            border-radius: 10px;
+            color: white;
+            background: lightblue;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cesiumContainer"></div>
+    <button id="rotateX">rotateX</button>
+    <button id="rotateY">rotateY</button>
+    <button id="rotateZ">rotateZ</button>
+    <button id="setScale">setScale</button>
+</body>
+<script type="module">
+    import initMap from '../../utils/initMap.js'
+    import translate from './utils/setTranslate.js'
+    //地图初始化
+    let viewer = initMap(Cesium)
+
+    //加载tileset数据
+    var tileset = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
+        url: './assest/Tileset/tileset.json',
+        modelMatrix: Cesium.Matrix4.IDENTITY
+    }))
+
+    let pcenter;
+    tileset.readyPromise.then(function () {
+        // var boundingSphere = tileset.boundingSphere;
+        // /* new Cesium.HeadingPitchRange 创建一个描述相机视图方向，俯仰角和距离范围的对象 */
+        // viewer.camera.viewBoundingSphere(boundingSphere, new Cesium.HeadingPitchRange(0.0, -0.5, boundingSphere.radius * 2));
+        // viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY) /* 4 * 4的单位矩阵  表示其初始状态*/
+        pcenter = Cesium.Cartesian3.clone(tileset.boundingSphere.center);
+        viewer.zoomTo(tileset, new Cesium.HeadingPitchRange(0.0, -0.5, tileset.boundingSphere.radius * 2.0))
+    })
+
+    let m = Cesium.Matrix4.clone(tileset.modelMatrix);
+
+    //坐标转换
+    // translate(Cesium, transformin)
+
+    //缩放
+    let value = 1
+    const btnSetScale = document.getElementById('setScale')
+    btnSetScale.addEventListener('click', () => {
+        value += 1
+        var m1 = Cesium.Matrix3.fromScale(new Cesium.Cartesian3(value, value, value));
+        translate(tileset, pcenter, m, Cesium, m1)
+    })
+    var anglex = 1;
+    const btnRotateX = document.getElementById('rotateX');
+    btnRotateX.addEventListener('click', () => {
+        anglex += 1;
+        let m1 = Cesium.Matrix3.fromRotationX(Cesium.Math.toRadians(anglex))
+        // tileset.modelMatrix = Cesium.Matrix4.multiplyByMatrix3(m, m1, new Cesium.Matrix4())
+        translate(tileset, pcenter, m, Cesium, m1)
+    })
+    var angley = 1
+    const btnRotateY = document.getElementById('rotateY');
+    btnRotateY.addEventListener('click', () => {
+        angley += 1;
+        let m1 = Cesium.Matrix3.fromRotationY(Cesium.Math.toRadians(angley))
+        // tileset.modelMatrix = Cesium.Matrix4.multiplyByMatrix3(m, m1, new Cesium.Matrix4())
+        translate(tileset, pcenter, m, Cesium, m1)
+    })
+    var anglez = 1
+    const btnRotateZ = document.getElementById('rotateZ')
+    btnRotateZ.addEventListener('click', () => {
+        anglez += 1;
+        let m1 = Cesium.Matrix3.fromRotationZ(Cesium.Math.toRadians(anglez));
+        // tileset.modelMatrix = Cesium.Matrix4.multiplyByMatrix3(m, m1, new Cesium.Matrix4())
+        translate(tileset, pcenter, m, Cesium, m1)
+    })
+</script>
+
+</html>
